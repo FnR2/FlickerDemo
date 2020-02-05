@@ -8,10 +8,6 @@ import dagger.android.DaggerApplication
 import dagger.android.DispatchingAndroidInjector
 import javax.inject.Inject
 
-
-
-
-
 class DemoApplication : DaggerApplication() {
     override fun applicationInjector(): AndroidInjector<DemoApplication> {
        return DaggerDemoApplicationComponent.builder().create(this)

@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">FlickerDemo</string>
+    <string name="farm_arg">farm-id</string>
+    <string name="server_arg">server-id</string>
+    <string name="photo_arg">photo-id</string>
+    <string name="secret_arg">secret</string>
+    <string name="size_arg">size</string>
+    <string name="image_url">https://farm{farm-id}/{server-id}/{photo-id}_{secret}_b.jpg</string>
 </resources>
