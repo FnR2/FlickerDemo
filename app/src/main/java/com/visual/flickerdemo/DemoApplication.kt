@@ -1,19 +1,19 @@
 package com.visual.flickerdemo
 
 import android.app.Application
-import dagger.android.AndroidInjector
-import dagger.android.HasAndroidInjector
-import android.app.Activity
-import dagger.android.DaggerApplication
-import dagger.android.DispatchingAndroidInjector
-import javax.inject.Inject
+import dagger.android.HasActivityInjector
 
-class DemoApplication : DaggerApplication() {
-    override fun applicationInjector(): AndroidInjector<DemoApplication> {
-       return DaggerDemoApplicationComponent.builder().create(this)
-    }
+class DemoApplication : Application(), HasActivityInjector {
+
+    private lateinit var appComponent: AppComponent
 
     override fun onCreate() {
         super.onCreate()
+
+        appComponent = DaggerAppComponent.builder()
+            .application(this)
+            .build()
     }
+
+    override fun activityInjector() = appComponent.activityInjector
 }

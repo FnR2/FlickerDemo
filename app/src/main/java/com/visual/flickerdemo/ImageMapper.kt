@@ -1,17 +1,24 @@
 package com.visual.flickerdemo
 
 import android.content.Context
+import javax.inject.Inject
 
-class ImageMapper {
+class ImageMapper @Inject constructor(
+    private val context: Context
+) {
 
-    fun map(imageItemList: List<ImageItem>) {
+    fun map(imageItemList: List<ImageItem>): List<ImageItemModel> {
 
-        val result: List<ImageItemModel> = emptyList()
+        val result = mutableListOf<ImageItemModel>()
 
         imageItemList.forEach {
 
+            val imageUrl = generateImageUrl(it, context)
+            result.add(ImageItemModel(it.id, imageUrl))
+
         }
 
+        return result
     }
 
     private fun generateImageUrl(item: ImageItem, context: Context): String {
