@@ -5,5 +5,6 @@
     <string name="photo_arg">photo-id</string>
     <string name="secret_arg">secret</string>
     <string name="size_arg">size</string>
-    <string name="image_url">https://farm{farm-id}/{server-id}/{photo-id}_{secret}_b.jpg</string>
+    <string name="image_url">https://farm{farm-id}.staticflickr.com/{server-id}/{photo-id}_{secret}_b.jpg</string>
+    <string name="title_activity_image_screen">ImageScreenActivity</string>
 </resources>

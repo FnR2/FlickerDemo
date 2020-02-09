@@ -30,7 +30,7 @@ class ImageMapper @Inject constructor(
 
         return formatUrl.replace("{$server}", item.server.toString())
             .replace("{$farm}", item.farm.toString())
-            .replace("{$photo}", item.id.toString())
-            .replace("{$secret}", item.secret.toString())
+            .replace("{$photo}", item.id)
+            .replace("{$secret}", item.secret)
     }
 }

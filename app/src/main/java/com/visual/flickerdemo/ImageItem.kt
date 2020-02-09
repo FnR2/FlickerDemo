@@ -1,7 +1,7 @@
 package com.visual.flickerdemo
 
 data class ImageItem(
-    val id: Int,
+    val id: String,
     val owner: String,
     val secret: String,
     val server: Int,

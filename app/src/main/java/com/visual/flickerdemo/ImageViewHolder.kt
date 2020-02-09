@@ -1,18 +1,20 @@
 package com.visual.flickerdemo
 
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
-import butterknife.BindView
 
-class ImageViewHolder(parent: ViewGroup, val binding: ViewDataBinding) : RecyclerView.ViewHolder(
-    LayoutInflater.from(parent.context).inflate(R.layout.image_item, parent, false)
-) {
 
-    fun bind(imageItemModel: ImageItemModel?) {
-        binding.setVariable(BR.viewModel, imageItemModel)
-        binding.executePendingBindings()
+class ImageViewHolder(
+    private val imageClickListener: ImageClickListener,
+    private val binding: ViewDataBinding
+) : RecyclerView.ViewHolder(binding.root) {
+
+    fun bind(viewModel: ImageItemModel) {
+
+        binding.setVariable(BR.viewModel, viewModel)
+        binding.executePendingBindings();
+        binding.root.setOnClickListener {
+            imageClickListener.imageClick(viewModel.id)
+        }
     }
 }

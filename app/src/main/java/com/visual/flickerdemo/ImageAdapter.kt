@@ -2,23 +2,25 @@ package com.visual.flickerdemo
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.databinding.DataBindingUtil.inflate
 import androidx.databinding.ViewDataBinding
-import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import javax.inject.Inject
 
-class ImageAdapter : PagedListAdapter<ImageItemModel, ImageViewHolder>(diffCallback) {
+class ImageAdapter @Inject constructor(
+    private val imageClickListener: ImageClickListener
+) : ListAdapter<ImageItemModel, ImageViewHolder>(diffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
+
         val binding: ViewDataBinding = inflate(
             LayoutInflater.from(parent.context),
             R.layout.image_item,
             parent,
             false
         )
-
-        return ImageViewHolder(parent, binding)
+        return ImageViewHolder(imageClickListener, binding)
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
@@ -41,4 +43,6 @@ class ImageAdapter : PagedListAdapter<ImageItemModel, ImageViewHolder>(diffCallb
                 oldItem == newItem
         }
     }
+
+
 }

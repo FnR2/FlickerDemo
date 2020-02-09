@@ -1,27 +1,24 @@
 package com.visual.flickerdemo
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
-import androidx.lifecycle.ViewModelProvider
+import android.util.Log
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.paging.PagedList
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import butterknife.BindView
 import butterknife.ButterKnife
 import dagger.android.AndroidInjection
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity() {
 
-    @BindView(R.id.rv_images)
-    lateinit var rvImages: RecyclerView
+class MainActivity : AppCompatActivity(), ImageClickListener {
 
-    @Inject
-    lateinit var imageAdapter: ImageAdapter
+    private val imageAdapter: ImageAdapter = ImageAdapter(this)
 
     @Inject
     lateinit var imageViewModel: ImageListViewModel
@@ -29,39 +26,64 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var imageViewModelFactory: ImageViewModelFactory
 
-    private var disposables = CompositeDisposable()
+    @BindView(R.id.rv_images)
+    lateinit var rvImages: RecyclerView
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AndroidInjection.inject(this)
         setContentView(R.layout.activity_main)
         ButterKnife.bind(this)
-        rv_images.adapter = imageAdapter
+
+        rvImages.adapter = imageAdapter
         imageViewModel =
             ViewModelProviders.of(this, imageViewModelFactory).get(ImageListViewModel::class.java)
+
+        val imageListObserver = Observer<List<ImageItemModel>> { imageList ->
+
+            renderList(imageList)
+        }
+
+        val errorObserver = Observer<String> { error -> renderError(error) }
+
+        imageViewModel.getImages().observe(this, imageListObserver)
+
+        imageViewModel.getError().observe(this, errorObserver)
+
+        setupScroll()
     }
 
-    override fun onResume() {
-        super.onResume()
-        disposables +=
-            imageViewModel.imageList.subscribeBy(
-                onNext = {
-                    render(it)
-                },
-                onError = {
-
-                }
+    override fun imageClick(id: String) {
+        val clickedItem = imageViewModel.getImages().value!!.firstOrNull { it.id == id }
+        startActivity(
+            Intent(this, ImageScreenActivity::class.java).putExtra(
+                ITEM_KEY, clickedItem
             )
-
+        )
     }
 
-    override fun onPause() {
-        super.onPause()
-        disposables.clear()
+    private fun setupScroll() {
+
+        val scrollListener = object :
+            EndlessRecyclerViewScrollListener(rv_images.layoutManager as LinearLayoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView) {
+
+                imageViewModel.fetchImages()
+
+            }
+        }
+
+        rvImages.addOnScrollListener(scrollListener)
     }
 
-    private fun render(imageList: PagedList<ImageItemModel>) {
+    private fun renderList(imageList: List<ImageItemModel>) {
         imageAdapter.submitList(imageList)
+
+    }
+
+    private fun renderError(errorMessage: String) {
+        Toast.makeText(applicationContext, errorMessage, Toast.LENGTH_LONG).show()
     }
 
 

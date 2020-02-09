@@ -49,38 +49,18 @@ abstract class MainActivityModule {
 
         @JvmStatic
         @Provides
-        fun providePaginationDataSource(
+        fun provideViewModelFactory(
             imageRepository: ImageRepository,
             imageMapper: ImageMapper
-        ): PaginationDataSource {
-            return PaginationDataSource(imageRepository, imageMapper)
+        ): ImageViewModelFactory {
+            return ImageViewModelFactory(imageRepository, imageMapper)
         }
 
-
-        @JvmStatic
-        @Provides
-        fun provideImageAdapter(): ImageAdapter {
-            return ImageAdapter()
-        }
-
-
-        @JvmStatic
-        @Provides
-        fun provideViewModelFactory(paginationDataSourceFactory: PaginationDataSourceFactory): ImageViewModelFactory {
-            return ImageViewModelFactory(paginationDataSourceFactory)
-        }
-
-
-        @JvmStatic
-        @Provides
-        fun provideDataSourceFactory(paginationDataSource: PaginationDataSource): PaginationDataSourceFactory {
-
-            return PaginationDataSourceFactory(paginationDataSource)
-        }
 
         @JvmStatic
         @Provides
         fun provideContext(application: Application) = application.applicationContext
+
 
     }
 
